@@ -243,6 +243,46 @@
       color: var(--accent);
     }
 
+    .ad-screen {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .ad-box {
+      max-width: 520px;
+      width: 90%;
+      border-radius: 28px;
+      padding: 34px;
+      background: #050505;
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 0 60px rgba(255,200,80,.18);
+    }
+
+    .ad-box h2 {
+      margin: 0 0 12px;
+      color: #ffe38a;
+      font-size: 32px;
+    }
+
+    #adCountdown {
+      font-size: 54px;
+      font-weight: 1000;
+      color: #fff;
+      margin: 18px 0;
+    }
+
+    #adNote {
+      color: rgba(255,255,255,.7);
+      font-weight: 700;
+    }
+
     footer {
       position: fixed;
       bottom: 10px;
@@ -332,6 +372,15 @@
     </div>
   </div>
 
+  <div class="ad-screen" id="adScreen">
+    <div class="ad-box">
+      <h2>No ad available at the moment</h2>
+      <p id="adNote">Simulated rewarded ad for testing.</p>
+      <div id="adCountdown">10</div>
+      <p>Reward unlocks when the timer finishes.</p>
+    </div>
+  </div>
+
   <footer>
     <a href="privacy.html">Privacy Policy</a>
   </footer>
@@ -361,6 +410,8 @@
     const highScoreEl = document.getElementById("highScore");
     const messageEl = document.getElementById("message");
     const keys = document.querySelectorAll(".key");
+    const adScreen = document.getElementById("adScreen");
+    const adCountdown = document.getElementById("adCountdown");
 
     let score = Number(localStorage.getItem("score")) || 0;
     let gems = Number(localStorage.getItem("gems")) || 0;
@@ -549,6 +600,7 @@
     }
 
     keys.forEach(key => key.addEventListener("click", () => triggerKey(key.dataset.key)));
+
     document.addEventListener("keydown", e => {
       const key = e.key.toUpperCase();
       if (/^[A-Z]$/.test(key)) triggerKey(key);
@@ -567,36 +619,34 @@
       save();
     }
 
-    function mysteryGift() {
-      const reward = Math.floor(Math.random()*41)+10;
-      gems += reward;
-      gemsEl.textContent = gems;
-      messageEl.textContent = "Mystery gift: +" + reward + " gems!";
-      save();
-    }
-
     function watchAd() {
       if (adRunning) return;
       adRunning = true;
 
-      messageEl.textContent = "Ad loading...";
+      let seconds = 10;
+      adCountdown.textContent = seconds;
+      adScreen.style.display = "flex";
 
-      setTimeout(() => messageEl.textContent = "Watching ad... 3", 800);
-      setTimeout(() => messageEl.textContent = "Watching ad... 2", 1600);
-      setTimeout(() => messageEl.textContent = "Watching ad... 1", 2400);
+      const timer = setInterval(() => {
+        seconds--;
+        adCountdown.textContent = seconds;
 
-      setTimeout(() => {
-        gems += 25;
-        gemsEl.textContent = gems;
-        messageEl.textContent = "Ad complete! +25 gems";
-        save();
-        adRunning = false;
+        if (seconds <= 0) {
+          clearInterval(timer);
 
-        // FUTURE REAL AD SETUP:
-        // Replace this countdown with a real rewarded ad provider later.
-        // Example idea: Google AdSense/AdMob rewarded ad callback gives gems after ad finishes.
+          gems += 25;
+          gemsEl.textContent = gems;
+          save();
 
-      }, 3200);
+          adScreen.style.display = "none";
+          messageEl.textContent = "Ad reward complete! +25 gems";
+          adRunning = false;
+
+          // FUTURE REAL AD SETUP:
+          // Replace this simulated black ad screen with a real rewarded ad provider later.
+          // Only give gems after the real ad successfully finishes.
+        }
+      }, 1000);
     }
 
     function buyTheme(name,cost) {
@@ -606,10 +656,12 @@
         closeShop();
         return;
       }
+
       if (gems < cost) {
         messageEl.textContent = "Not enough gems!";
         return;
       }
+
       gems -= cost;
       ownedThemes.push(name);
       gemsEl.textContent = gems;
