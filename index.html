@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Keyflow</title>
+  <title>Keyflow v0.3</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -20,7 +20,60 @@
       overflow: hidden;
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -120px;
+      background:
+        radial-gradient(circle, rgba(255,220,100,.20) 0 2px, transparent 3px);
+      background-size: 55px 55px;
+      animation: drift 18s linear infinite;
+      opacity: .65;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,180,40,.22), transparent 68%);
+      filter: blur(20px);
+      animation: floatGlow 9s infinite alternate ease-in-out;
+      z-index: 0;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0); }
+      to { transform: translateY(90px); }
+    }
+
+    @keyframes floatGlow {
+      from { left: -120px; top: -80px; }
+      to { left: 65%; top: 55%; }
+    }
+
+    .particle {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffe98a;
+      pointer-events: none;
+      animation: pop 0.7s ease-out forwards;
+      z-index: 99;
+    }
+
+    @keyframes pop {
+      to {
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 0;
+      }
+    }
+
     .app {
+      position: relative;
+      z-index: 2;
       width: 98vw;
       max-width: 1200px;
       display: grid;
@@ -78,7 +131,7 @@
 
     .hud div {
       flex: 1;
-      padding: 14px;
+      padding: 13px;
       border-radius: 18px;
       background: rgba(255,210,90,.14);
       backdrop-filter: blur(12px);
@@ -86,7 +139,7 @@
     }
 
     .screen {
-      height: 92px;
+      height: 100px;
       margin-bottom: 20px;
       border-radius: 28px;
       background: rgba(255,180,40,.13);
@@ -94,6 +147,7 @@
       align-items: center;
       justify-content: center;
       box-shadow: inset 0 0 30px rgba(255,200,80,.25);
+      padding: 12px;
     }
 
     #message {
@@ -165,23 +219,24 @@
       to { box-shadow: 0 0 42px #ff1a00, 0 10px 0 rgba(95,35,0,.9); }
     }
 
-    .shop {
+    .modal {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,.72);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 10;
+      z-index: 50;
     }
 
-    .shop-box {
+    .modal-box {
       width: 90%;
-      max-width: 520px;
+      max-width: 560px;
       padding: 26px;
       border-radius: 30px;
       background: linear-gradient(145deg, #ffcf5c, #7a3300);
       color: #241000;
+      box-shadow: 0 30px 90px rgba(0,0,0,.8);
     }
 
     .shop-item {
@@ -190,17 +245,24 @@
       border-radius: 18px;
       margin: 10px 0;
       font-weight: 900;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .close {
-      padding: 12px 18px;
+    .buy, .close {
+      padding: 10px 14px;
       border: 0;
       border-radius: 14px;
       font-weight: 900;
       cursor: pointer;
+      background: #2b1600;
+      color: #ffe38a;
     }
 
     @media (max-width: 900px) {
+      body { overflow: auto; padding: 18px 0; }
+
       .app {
         grid-template-columns: 1fr;
       }
@@ -235,6 +297,7 @@
       <button class="mode-btn" onclick="setMode('combo')">🍯 Sticky<br>Combo</button>
       <button class="mode-btn" onclick="setMode('words')">🐝 Honey<br>Words</button>
       <button class="mode-btn" onclick="setMode('dont')">🚫 Don’t<br>Press</button>
+      <button class="mode-btn" onclick="claimDaily()">🎁 Daily<br>Gift</button>
     </div>
 
     <div class="main">
@@ -243,7 +306,8 @@
       <div class="hud">
         <div>Score: <span id="score">0</span></div>
         <div>Combo: <span id="combo">0</span>x</div>
-        <div>Target: <span id="target">?</span></div>
+        <div>Gems: <span id="gems">0</span></div>
+        <div>High: <span id="highScore">0</span></div>
       </div>
 
       <div class="screen">
@@ -265,18 +329,20 @@
 
     <div class="panel right">
       <button class="mode-btn" onclick="setMode('speed')">⚡ Speed<br>Rush</button>
-      <button class="mode-btn" onclick="setMode('memory')">🧠 Memory<br>Chain</button>
+      <button class="mode-btn" onclick="setMode('bee')">🐝 Bee<br>Hunt</button>
+      <button class="mode-btn" onclick="mysteryGift()">🎲 Mystery<br>Gift</button>
       <button class="mode-btn" onclick="openShop()">🛒<br>Shop</button>
     </div>
   </div>
 
-  <div class="shop" id="shop">
-    <div class="shop-box">
+  <div class="modal" id="shop">
+    <div class="modal-box">
       <h2>🛒 Keyflow Shop</h2>
-      <div class="shop-item">500 Honey Gems - $1.99</div>
-      <div class="shop-item">Neon Keyboard Pack - $2.99</div>
-      <div class="shop-item">Glass Sound Pack - $1.49</div>
-      <div class="shop-item">Unlock All Themes - $6.99</div>
+      <div class="shop-item"><span>Neon Theme</span><button class="buy" onclick="buyItem('Neon Theme',150)">150 Gems</button></div>
+      <div class="shop-item"><span>Glass Theme</span><button class="buy" onclick="buyItem('Glass Theme',120)">120 Gems</button></div>
+      <div class="shop-item"><span>Golden Sound Pack</span><button class="buy" onclick="buyItem('Golden Sound Pack',200)">200 Gems</button></div>
+      <div class="shop-item"><span>Honey Tree Background</span><button class="buy" onclick="buyItem('Honey Tree Background',250)">250 Gems</button></div>
+      <p style="font-weight:900;">Mock shop only. No real payments yet.</p>
       <button class="close" onclick="closeShop()">Close</button>
     </div>
   </div>
@@ -284,22 +350,53 @@
   <script>
     const SOUND_URL = "https://tmpfiles.org/dl/wwwgU01Ubd7l/universfield-slime-impact-3524731-audiotrimmer.com2.mp3";
     const letters = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
-    const words = ["HONEY", "BEE", "FLOW", "GOLD", "STICKY", "KEY"];
+    const words = ["HONEY", "BEE", "FLOW", "GOLD", "STICKY", "KEY", "BUZZ"];
 
     const scoreEl = document.getElementById("score");
     const comboEl = document.getElementById("combo");
-    const targetEl = document.getElementById("target");
+    const gemsEl = document.getElementById("gems");
+    const highScoreEl = document.getElementById("highScore");
     const messageEl = document.getElementById("message");
     const keys = document.querySelectorAll(".key");
 
-    let score = 0, combo = 0, target = "", mode = "combo";
-    let wordTarget = "", wordProgress = "";
-    let memoryChain = [];
+    let score = Number(localStorage.getItem("score")) || 0;
+    let gems = Number(localStorage.getItem("gems")) || 0;
+    let highScore = Number(localStorage.getItem("highScore")) || 0;
+    let combo = 0;
+    let target = "";
+    let mode = "combo";
+    let wordTarget = "";
+    let wordProgress = "";
+    let beeTargets = [];
+    let roundStartTime = Date.now();
+
+    scoreEl.textContent = score;
+    gemsEl.textContent = gems;
+    highScoreEl.textContent = highScore;
+
+    function save() {
+      localStorage.setItem("score", score);
+      localStorage.setItem("gems", gems);
+      localStorage.setItem("highScore", highScore);
+    }
 
     function playSound() {
       const sound = new Audio(SOUND_URL);
       sound.volume = 0.85;
       sound.play();
+    }
+
+    function particles() {
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        p.style.left = "50%";
+        p.style.top = "50%";
+        p.style.setProperty("--x", (Math.random() * 220 - 110) + "px");
+        p.style.setProperty("--y", (Math.random() * 220 - 110) + "px");
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 700);
+      }
     }
 
     function pressVisual(keyName) {
@@ -320,6 +417,14 @@
       if (key) key.classList.add(type);
     }
 
+    function randomLetter(except = []) {
+      let pick;
+      do {
+        pick = letters[Math.floor(Math.random() * letters.length)];
+      } while (except.includes(pick));
+      return pick;
+    }
+
     function setMode(newMode) {
       mode = newMode;
       combo = 0;
@@ -327,17 +432,13 @@
       newRound();
     }
 
-    function randomLetter() {
-      return letters[Math.floor(Math.random() * letters.length)];
-    }
-
     function newRound() {
       clearKeys();
+      roundStartTime = Date.now();
 
       if (mode === "combo" || mode === "speed") {
         target = randomLetter();
-        targetEl.textContent = target;
-        messageEl.textContent = mode === "speed" ? "SPEED! hit " + target : "hit " + target;
+        messageEl.textContent = mode === "speed" ? "SPEED! Hit " + target : "Hit " + target;
         glow(target);
       }
 
@@ -345,39 +446,42 @@
         wordTarget = words[Math.floor(Math.random() * words.length)];
         wordProgress = "";
         target = wordTarget[0];
-        targetEl.textContent = wordTarget;
-        messageEl.textContent = "type: " + wordTarget;
+        messageEl.textContent = "Type: " + wordTarget;
         glow(target);
       }
 
       if (mode === "dont") {
         target = randomLetter();
-        targetEl.textContent = "NOT " + target;
-        messageEl.textContent = "press anything except " + target;
+        messageEl.textContent = "Don't press " + target;
         glow(target, "danger-key");
       }
 
-      if (mode === "memory") {
-        memoryChain = [randomLetter(), randomLetter(), randomLetter()];
-        target = memoryChain[0];
-        targetEl.textContent = memoryChain.join(" ");
-        messageEl.textContent = "remember chain";
-        glow(target);
+      if (mode === "bee") {
+        beeTargets = [randomLetter(), randomLetter(), randomLetter()];
+        messageEl.textContent = "Bee Hunt: " + beeTargets.join(" ");
+        beeTargets.forEach(k => glow(k));
       }
     }
 
     function correct(points = 10) {
       combo++;
       score += points + combo;
+      gems += 1;
+      if (score > highScore) highScore = score;
+
       scoreEl.textContent = score;
       comboEl.textContent = combo;
-      messageEl.textContent = "sticky combo +" + combo;
+      gemsEl.textContent = gems;
+      highScoreEl.textContent = highScore;
+
+      particles();
+      save();
     }
 
     function wrong() {
       combo = 0;
       comboEl.textContent = combo;
-      messageEl.textContent = "miss!";
+      messageEl.textContent = "Miss!";
     }
 
     function triggerKey(keyName) {
@@ -385,12 +489,17 @@
       pressVisual(keyName);
 
       if (mode === "combo") {
-        keyName === target ? correct() : wrong();
+        keyName === target ? correct(10) : wrong();
         newRound();
       }
 
       else if (mode === "speed") {
-        keyName === target ? correct(20) : wrong();
+        if (keyName === target) {
+          const reaction = Date.now() - roundStartTime;
+          const bonus = Math.max(5, Math.floor(45 - reaction / 50));
+          correct(20 + bonus);
+          messageEl.textContent = "Speed bonus +" + bonus;
+        } else wrong();
         newRound();
       }
 
@@ -406,8 +515,8 @@
 
           if (wordProgress === wordTarget) {
             score += 40;
-            scoreEl.textContent = score;
-            messageEl.textContent = "word cleared!";
+            messageEl.textContent = "Word cleared!";
+            save();
             newRound();
           } else {
             clearKeys();
@@ -421,20 +530,20 @@
         }
       }
 
-      else if (mode === "memory") {
-        if (keyName === memoryChain[0]) {
-          correct(14);
-          memoryChain.shift();
+      else if (mode === "bee") {
+        if (beeTargets.includes(keyName)) {
+          correct(12);
+          beeTargets = beeTargets.filter(k => k !== keyName);
+          clearKeys();
+          beeTargets.forEach(k => glow(k));
 
-          if (memoryChain.length === 0) {
+          if (beeTargets.length === 0) {
             score += 50;
-            scoreEl.textContent = score;
+            messageEl.textContent = "Bee Hunt cleared!";
+            save();
             newRound();
           } else {
-            clearKeys();
-            target = memoryChain[0];
-            targetEl.textContent = memoryChain.join(" ");
-            glow(target);
+            messageEl.textContent = "Bees left: " + beeTargets.join(" ");
           }
         } else {
           wrong();
@@ -451,6 +560,42 @@
       const key = event.key.toUpperCase();
       if (/^[A-Z]$/.test(key)) triggerKey(key);
     });
+
+    function claimDaily() {
+      const today = new Date().toDateString();
+      const last = localStorage.getItem("daily");
+
+      if (last === today) {
+        messageEl.textContent = "Daily gift already claimed!";
+        return;
+      }
+
+      gems += 50;
+      localStorage.setItem("daily", today);
+      gemsEl.textContent = gems;
+      messageEl.textContent = "Daily gift: +50 gems!";
+      save();
+    }
+
+    function mysteryGift() {
+      const reward = Math.floor(Math.random() * 41) + 10;
+      gems += reward;
+      gemsEl.textContent = gems;
+      messageEl.textContent = "Mystery gift: +" + reward + " gems!";
+      save();
+    }
+
+    function buyItem(name, cost) {
+      if (gems < cost) {
+        messageEl.textContent = "Not enough gems for " + name;
+        return;
+      }
+
+      gems -= cost;
+      gemsEl.textContent = gems;
+      messageEl.textContent = "Unlocked: " + name;
+      save();
+    }
 
     function openShop() {
       document.getElementById("shop").style.display = "flex";
