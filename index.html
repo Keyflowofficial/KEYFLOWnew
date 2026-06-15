@@ -8,118 +8,162 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: radial-gradient(circle at top, #342000, #070400 65%);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,190,40,.35), transparent 25%),
+        radial-gradient(circle at 80% 80%, rgba(255,130,0,.25), transparent 30%),
+        linear-gradient(135deg, #120800, #000);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: white;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -80px;
+      background:
+        radial-gradient(circle, rgba(255,210,80,.18) 0 2px, transparent 3px);
+      background-size: 55px 55px;
+      animation: drift 18s linear infinite;
+      opacity: .6;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0); }
+      to { transform: translateY(80px); }
     }
 
     .app {
+      position: relative;
+      z-index: 2;
       width: 94vw;
-      max-width: 760px;
+      max-width: 820px;
       text-align: center;
     }
 
-    h1 { margin-bottom: 12px; }
+    h1 {
+      font-size: 48px;
+      margin: 0 0 12px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 25px rgba(255,190,40,.8);
+    }
 
     .hud {
       display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-      font-weight: bold;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
     .hud div {
       flex: 1;
-      background: rgba(255, 210, 90, 0.14);
-      padding: 10px;
-      border-radius: 16px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,210,90,.14);
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 0 18px rgba(255,200,60,.18);
+      font-weight: 800;
     }
 
     .screen {
-      height: 80px;
-      border-radius: 24px;
-      margin-bottom: 18px;
-      background: rgba(255, 210, 90, 0.12);
+      height: 92px;
+      margin-bottom: 20px;
+      border-radius: 28px;
+      background: rgba(255,180,40,.13);
+      backdrop-filter: blur(14px);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      font-weight: 900;
+      box-shadow:
+        inset 0 0 30px rgba(255,200,80,.25),
+        0 20px 50px rgba(0,0,0,.35);
+    }
+
+    #message {
+      font-size: 28px;
+      font-weight: 950;
+      color: #ffe38a;
+      text-shadow: 0 0 20px rgba(255,190,40,.9);
     }
 
     #keyboard {
-      padding: 22px 18px 26px;
-      border-radius: 34px;
+      padding: 26px 20px 30px;
+      border-radius: 40px;
       background:
-        radial-gradient(circle at 25% 10%, rgba(255,255,255,0.32), transparent 22%),
-        linear-gradient(145deg, rgba(255,205,70,0.92), rgba(150,70,0,0.95));
+        radial-gradient(circle at 30% 12%, rgba(255,255,255,.45), transparent 20%),
+        radial-gradient(circle at 80% 90%, rgba(110,35,0,.4), transparent 38%),
+        linear-gradient(145deg, rgba(255,210,80,.96), rgba(145,60,0,.98));
       box-shadow:
-        inset 0 12px 22px rgba(255,255,255,0.22),
-        inset 0 -22px 35px rgba(70,25,0,0.5),
-        0 35px 80px rgba(0,0,0,0.65);
+        inset 0 16px 28px rgba(255,255,255,.28),
+        inset 0 -28px 42px rgba(60,20,0,.62),
+        0 35px 90px rgba(0,0,0,.75);
     }
 
     .key-row {
       display: flex;
       justify-content: center;
-      gap: 8px;
-      margin-bottom: 9px;
+      gap: 10px;
+      margin-bottom: 11px;
     }
 
-    .middle-row { padding-left: 22px; padding-right: 22px; }
-    .bottom-letters { padding-left: 52px; padding-right: 52px; }
+    .middle-row { padding-left: 30px; padding-right: 30px; }
+    .bottom-letters { padding-left: 70px; padding-right: 70px; }
 
     .key {
-      width: 56px;
-      height: 58px;
-      border: none;
-      border-radius: 18px;
-      font-weight: 900;
-      color: rgba(48, 24, 0, 0.82);
+      width: 60px;
+      height: 62px;
+      border: 0;
+      border-radius: 20px;
       cursor: pointer;
+      font-size: 20px;
+      font-weight: 1000;
+      color: rgba(40,20,0,.86);
+
       background:
-        radial-gradient(circle at 35% 20%, rgba(255,255,255,0.55), transparent 28%),
-        linear-gradient(145deg, rgba(255,230,120,0.96), rgba(210,100,0,0.9));
+        radial-gradient(circle at 35% 20%, rgba(255,255,255,.7), transparent 28%),
+        linear-gradient(145deg, rgba(255,235,135,.98), rgba(205,95,0,.94));
+
       box-shadow:
-        inset 0 9px 12px rgba(255,255,255,0.35),
-        inset 0 -10px 14px rgba(75,25,0,0.42),
-        0 9px 0 rgba(105,45,0,0.85),
-        0 14px 18px rgba(60,20,0,0.42);
-      transition: 0.08s ease;
+        inset 0 10px 14px rgba(255,255,255,.42),
+        inset 0 -12px 16px rgba(70,20,0,.48),
+        0 10px 0 rgba(95,35,0,.9),
+        0 18px 24px rgba(40,10,0,.48);
+
+      transition: .08s ease;
     }
 
     .key.pressed {
-      transform: translateY(8px) scale(0.96, 0.88);
+      transform: translateY(9px) scale(.96,.86);
+      filter: saturate(1.35) brightness(.95);
       box-shadow:
-        inset 0 14px 20px rgba(60,20,0,0.62),
-        inset 0 -5px 10px rgba(255,235,150,0.28),
-        0 2px 0 rgba(95,35,0,0.9),
-        0 5px 10px rgba(50,15,0,0.45);
+        inset 0 16px 24px rgba(55,15,0,.72),
+        inset 0 -5px 10px rgba(255,235,150,.25),
+        0 2px 0 rgba(90,30,0,.95),
+        0 6px 14px rgba(35,10,0,.45);
     }
 
     .key.target-key {
-      animation: pulse 0.7s infinite alternate;
+      animation: pulse .65s infinite alternate;
     }
 
     @keyframes pulse {
-      from { box-shadow: 0 0 12px #fff1a8, 0 9px 0 rgba(105,45,0,0.85); }
-      to { box-shadow: 0 0 35px #ffea70, 0 9px 0 rgba(105,45,0,0.85); }
+      from { filter: brightness(1); box-shadow: 0 0 16px #ffe98a, 0 10px 0 rgba(95,35,0,.9); }
+      to { filter: brightness(1.25); box-shadow: 0 0 42px #fff2a6, 0 10px 0 rgba(95,35,0,.9); }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
+      h1 { font-size: 36px; }
       .key {
-        width: 32px;
-        height: 44px;
-        border-radius: 13px;
-        font-size: 11px;
+        width: 33px;
+        height: 46px;
+        border-radius: 14px;
+        font-size: 12px;
       }
-
-      .middle-row { padding-left: 13px; padding-right: 13px; }
-      .bottom-letters { padding-left: 30px; padding-right: 30px; }
+      .key-row { gap: 6px; }
+      .middle-row { padding-left: 14px; padding-right: 14px; }
+      .bottom-letters { padding-left: 34px; padding-right: 34px; }
     }
   </style>
 </head>
@@ -142,11 +186,9 @@
       <div class="key-row">
         <button class="key" data-key="Q">Q</button><button class="key" data-key="W">W</button><button class="key" data-key="E">E</button><button class="key" data-key="R">R</button><button class="key" data-key="T">T</button><button class="key" data-key="Y">Y</button><button class="key" data-key="U">U</button><button class="key" data-key="I">I</button><button class="key" data-key="O">O</button><button class="key" data-key="P">P</button>
       </div>
-
       <div class="key-row middle-row">
         <button class="key" data-key="A">A</button><button class="key" data-key="S">S</button><button class="key" data-key="D">D</button><button class="key" data-key="F">F</button><button class="key" data-key="G">G</button><button class="key" data-key="H">H</button><button class="key" data-key="J">J</button><button class="key" data-key="K">K</button><button class="key" data-key="L">L</button>
       </div>
-
       <div class="key-row bottom-letters">
         <button class="key" data-key="Z">Z</button><button class="key" data-key="X">X</button><button class="key" data-key="C">C</button><button class="key" data-key="V">V</button><button class="key" data-key="B">B</button><button class="key" data-key="N">N</button><button class="key" data-key="M">M</button>
       </div>
@@ -176,23 +218,16 @@
     function pressVisual(keyName) {
       const key = document.querySelector(`[data-key="${keyName}"]`);
       if (!key) return;
-
       key.classList.add("pressed");
       setTimeout(() => key.classList.remove("pressed"), 110);
     }
 
-    function clearGlow() {
-      document.querySelectorAll(".target-key").forEach(k => k.classList.remove("target-key"));
-    }
-
     function newTarget() {
-      clearGlow();
+      document.querySelectorAll(".target-key").forEach(k => k.classList.remove("target-key"));
       target = letters[Math.floor(Math.random() * letters.length)];
       targetEl.textContent = target;
       messageEl.textContent = "hit " + target;
-
-      const key = document.querySelector(`[data-key="${target}"]`);
-      if (key) key.classList.add("target-key");
+      document.querySelector(`[data-key="${target}"]`).classList.add("target-key");
     }
 
     function triggerKey(keyName) {
