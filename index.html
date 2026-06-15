@@ -54,7 +54,7 @@
 
     .panel { display: flex; flex-direction: column; gap: 14px; }
 
-    .mode-btn, .theme-btn {
+    .mode-btn {
       min-height: 78px;
       border: 0;
       border-radius: 24px;
@@ -73,7 +73,7 @@
       transition: .1s ease;
     }
 
-    .mode-btn:active, .theme-btn:active {
+    .mode-btn:active {
       transform: translateY(8px) scale(.96);
       box-shadow: inset 0 14px 20px rgba(0,0,0,.45), 0 2px 0 #000;
     }
@@ -243,15 +243,27 @@
       color: var(--accent);
     }
 
-    .active-theme {
-      outline: 3px solid white;
+    footer {
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      opacity: .75;
+      z-index: 100;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
     }
 
     @media (max-width: 900px) {
-      body { overflow: auto; padding: 18px 0; }
+      body { overflow: auto; padding: 18px 0 50px; }
       .app { grid-template-columns: 1fr; }
       .panel { flex-direction: row; flex-wrap: wrap; justify-content: center; }
-      .mode-btn, .theme-btn { width: 46%; min-height: 66px; }
+      .mode-btn { width: 46%; min-height: 66px; }
       h1 { font-size: 38px; }
       .hud { grid-template-columns: repeat(2,1fr); }
       .key { width: 33px; height: 46px; border-radius: 14px; font-size: 12px; }
@@ -302,6 +314,7 @@
       <button class="mode-btn" onclick="setMode('speed')">⚡ Speed<br>Rush</button>
       <button class="mode-btn" onclick="setMode('bee')">🐝 Bee<br>Hunt</button>
       <button class="mode-btn" onclick="mysteryGift()">🎲 Mystery<br>Gift</button>
+      <button class="mode-btn" onclick="watchAd()">🎥 Watch<br>Ad</button>
       <button class="mode-btn" onclick="openShop()">🛒<br>Shop</button>
     </div>
   </div>
@@ -315,10 +328,14 @@
       <div class="shop-item"><span>🌌 Galaxy Flow</span><button class="buy" onclick="buyTheme('galaxy',180)">180 Gems</button></div>
       <div class="shop-item"><span>🍓 Strawberry Goo</span><button class="buy" onclick="buyTheme('strawberry',160)">160 Gems</button></div>
       <div class="shop-item"><span>🖤 Void Honey</span><button class="buy" onclick="buyTheme('void',220)">220 Gems</button></div>
-      <p style="font-weight:900;">Mock shop only. Gems are earned by playing.</p>
+      <p style="font-weight:900;">Gems are earned by playing or watching ads. Shop is mock/demo for now.</p>
       <button class="close" onclick="closeShop()">Close</button>
     </div>
   </div>
+
+  <footer>
+    <a href="privacy.html">Privacy Policy</a>
+  </footer>
 
   <script>
     const letters = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
@@ -353,6 +370,7 @@
     let currentTheme = localStorage.getItem("theme") || "honey";
     let combo = 0, target = "", mode = "combo", wordTarget = "", wordProgress = "", beeTargets = [];
     let roundStartTime = Date.now();
+    let adRunning = false;
 
     scoreEl.textContent = score;
     gemsEl.textContent = gems;
@@ -556,6 +574,30 @@
       gemsEl.textContent = gems;
       messageEl.textContent = "Mystery gift: +" + reward + " gems!";
       save();
+    }
+
+    function watchAd() {
+      if (adRunning) return;
+      adRunning = true;
+
+      messageEl.textContent = "Ad loading...";
+
+      setTimeout(() => messageEl.textContent = "Watching ad... 3", 800);
+      setTimeout(() => messageEl.textContent = "Watching ad... 2", 1600);
+      setTimeout(() => messageEl.textContent = "Watching ad... 1", 2400);
+
+      setTimeout(() => {
+        gems += 25;
+        gemsEl.textContent = gems;
+        messageEl.textContent = "Ad complete! +25 gems";
+        save();
+        adRunning = false;
+
+        // FUTURE REAL AD SETUP:
+        // Replace this countdown with a real rewarded ad provider later.
+        // Example idea: Google AdSense/AdMob rewarded ad callback gives gems after ad finishes.
+
+      }, 3200);
     }
 
     function buyTheme(name,cost) {
