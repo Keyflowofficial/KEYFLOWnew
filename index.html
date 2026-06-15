@@ -24,8 +24,7 @@
       content: "";
       position: fixed;
       inset: -80px;
-      background:
-        radial-gradient(circle, rgba(255,210,80,.18) 0 2px, transparent 3px);
+      background: radial-gradient(circle, rgba(255,210,80,.18) 0 2px, transparent 3px);
       background-size: 55px 55px;
       animation: drift 18s linear infinite;
       opacity: .6;
@@ -40,12 +39,45 @@
       position: relative;
       z-index: 2;
       width: 94vw;
-      max-width: 820px;
+      max-width: 980px;
+      display: flex;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .side {
+      width: 180px;
+      padding: 18px;
+      border-radius: 28px;
+      background: rgba(255,210,90,.13);
+      backdrop-filter: blur(14px);
+      box-shadow: inset 0 0 24px rgba(255,200,80,.18);
+    }
+
+    .side h2 {
+      margin: 0 0 14px;
+      color: #ffe38a;
+    }
+
+    .side button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 12px;
+      border: 0;
+      border-radius: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      background: linear-gradient(145deg, #ffe38a, #c86a00);
+      color: #2b1600;
+    }
+
+    .main {
+      flex: 1;
       text-align: center;
     }
 
     h1 {
-      font-size: 48px;
+      font-size: 46px;
       margin: 0 0 12px;
       letter-spacing: 2px;
       text-shadow: 0 0 25px rgba(255,190,40,.8);
@@ -76,13 +108,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow:
-        inset 0 0 30px rgba(255,200,80,.25),
-        0 20px 50px rgba(0,0,0,.35);
+      box-shadow: inset 0 0 30px rgba(255,200,80,.25), 0 20px 50px rgba(0,0,0,.35);
     }
 
     #message {
-      font-size: 28px;
+      font-size: 27px;
       font-weight: 950;
       color: #ffe38a;
       text-shadow: 0 0 20px rgba(255,190,40,.9);
@@ -120,17 +150,14 @@
       font-size: 20px;
       font-weight: 1000;
       color: rgba(40,20,0,.86);
-
       background:
         radial-gradient(circle at 35% 20%, rgba(255,255,255,.7), transparent 28%),
         linear-gradient(145deg, rgba(255,235,135,.98), rgba(205,95,0,.94));
-
       box-shadow:
         inset 0 10px 14px rgba(255,255,255,.42),
         inset 0 -12px 16px rgba(70,20,0,.48),
         0 10px 0 rgba(95,35,0,.9),
         0 18px 24px rgba(40,10,0,.48);
-
       transition: .08s ease;
     }
 
@@ -144,16 +171,61 @@
         0 6px 14px rgba(35,10,0,.45);
     }
 
-    .key.target-key {
-      animation: pulse .65s infinite alternate;
-    }
+    .key.target-key { animation: pulse .65s infinite alternate; }
+    .key.danger-key { animation: danger .55s infinite alternate; }
 
     @keyframes pulse {
       from { filter: brightness(1); box-shadow: 0 0 16px #ffe98a, 0 10px 0 rgba(95,35,0,.9); }
       to { filter: brightness(1.25); box-shadow: 0 0 42px #fff2a6, 0 10px 0 rgba(95,35,0,.9); }
     }
 
-    @media (max-width: 700px) {
+    @keyframes danger {
+      from { box-shadow: 0 0 14px #ff3b1f, 0 10px 0 rgba(95,35,0,.9); }
+      to { box-shadow: 0 0 42px #ff1a00, 0 10px 0 rgba(95,35,0,.9); }
+    }
+
+    .shop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .shop-box {
+      width: 90%;
+      max-width: 520px;
+      padding: 26px;
+      border-radius: 30px;
+      background: linear-gradient(145deg, #ffcf5c, #7a3300);
+      color: #241000;
+      box-shadow: 0 30px 90px rgba(0,0,0,.8);
+    }
+
+    .shop-item {
+      background: rgba(255,255,255,.22);
+      padding: 14px;
+      border-radius: 18px;
+      margin: 10px 0;
+      font-weight: 900;
+    }
+
+    .close {
+      margin-top: 12px;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    @media (max-width: 760px) {
+      .app { flex-direction: column; }
+      .side { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .side h2 { grid-column: 1 / -1; }
+      .side button { margin: 0; }
       h1 { font-size: 36px; }
       .key {
         width: 33px;
@@ -170,35 +242,56 @@
 
 <body>
   <div class="app">
-    <h1>Keyflow</h1>
-
-    <div class="hud">
-      <div>Score: <span id="score">0</span></div>
-      <div>Combo: <span id="combo">0</span>x</div>
-      <div>Target: <span id="target">?</span></div>
+    <div class="side">
+      <h2>Modes</h2>
+      <button onclick="setMode('combo')">Sticky Combo</button>
+      <button onclick="setMode('words')">Honey Words</button>
+      <button onclick="setMode('dont')">Don’t Press</button>
+      <button onclick="openShop()">Shop</button>
     </div>
 
-    <div class="screen">
-      <div id="message">press the target key</div>
-    </div>
+    <div class="main">
+      <h1>Keyflow</h1>
 
-    <div id="keyboard">
-      <div class="key-row">
-        <button class="key" data-key="Q">Q</button><button class="key" data-key="W">W</button><button class="key" data-key="E">E</button><button class="key" data-key="R">R</button><button class="key" data-key="T">T</button><button class="key" data-key="Y">Y</button><button class="key" data-key="U">U</button><button class="key" data-key="I">I</button><button class="key" data-key="O">O</button><button class="key" data-key="P">P</button>
+      <div class="hud">
+        <div>Score: <span id="score">0</span></div>
+        <div>Combo: <span id="combo">0</span>x</div>
+        <div>Target: <span id="target">?</span></div>
       </div>
-      <div class="key-row middle-row">
-        <button class="key" data-key="A">A</button><button class="key" data-key="S">S</button><button class="key" data-key="D">D</button><button class="key" data-key="F">F</button><button class="key" data-key="G">G</button><button class="key" data-key="H">H</button><button class="key" data-key="J">J</button><button class="key" data-key="K">K</button><button class="key" data-key="L">L</button>
+
+      <div class="screen">
+        <div id="message">press the target key</div>
       </div>
-      <div class="key-row bottom-letters">
-        <button class="key" data-key="Z">Z</button><button class="key" data-key="X">X</button><button class="key" data-key="C">C</button><button class="key" data-key="V">V</button><button class="key" data-key="B">B</button><button class="key" data-key="N">N</button><button class="key" data-key="M">M</button>
+
+      <div id="keyboard">
+        <div class="key-row">
+          <button class="key" data-key="Q">Q</button><button class="key" data-key="W">W</button><button class="key" data-key="E">E</button><button class="key" data-key="R">R</button><button class="key" data-key="T">T</button><button class="key" data-key="Y">Y</button><button class="key" data-key="U">U</button><button class="key" data-key="I">I</button><button class="key" data-key="O">O</button><button class="key" data-key="P">P</button>
+        </div>
+        <div class="key-row middle-row">
+          <button class="key" data-key="A">A</button><button class="key" data-key="S">S</button><button class="key" data-key="D">D</button><button class="key" data-key="F">F</button><button class="key" data-key="G">G</button><button class="key" data-key="H">H</button><button class="key" data-key="J">J</button><button class="key" data-key="K">K</button><button class="key" data-key="L">L</button>
+        </div>
+        <div class="key-row bottom-letters">
+          <button class="key" data-key="Z">Z</button><button class="key" data-key="X">X</button><button class="key" data-key="C">C</button><button class="key" data-key="V">V</button><button class="key" data-key="B">B</button><button class="key" data-key="N">N</button><button class="key" data-key="M">M</button>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <div class="shop" id="shop">
+    <div class="shop-box">
+      <h2>Keyflow Shop</h2>
+      <div class="shop-item">500 Honey Gems - $1.99</div>
+      <div class="shop-item">Neon Keyboard Pack - $2.99</div>
+      <div class="shop-item">Glass Sound Pack - $1.49</div>
+      <div class="shop-item">Unlock All Themes - $6.99</div>
+      <button class="close" onclick="closeShop()">Close</button>
     </div>
   </div>
 
   <script>
     const SOUND_URL = "https://tmpfiles.org/dl/wwwgU01Ubd7l/universfield-slime-impact-3524731-audiotrimmer.com2.mp3";
     const letters = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
-
+    const words = ["HONEY", "BEE", "FLOW", "GOLD", "STICKY", "KEY"];
     const scoreEl = document.getElementById("score");
     const comboEl = document.getElementById("combo");
     const targetEl = document.getElementById("target");
@@ -208,6 +301,9 @@
     let score = 0;
     let combo = 0;
     let target = "";
+    let mode = "combo";
+    let wordTarget = "";
+    let wordProgress = "";
 
     function playSound() {
       const sound = new Audio(SOUND_URL);
@@ -222,30 +318,97 @@
       setTimeout(() => key.classList.remove("pressed"), 110);
     }
 
-    function newTarget() {
-      document.querySelectorAll(".target-key").forEach(k => k.classList.remove("target-key"));
-      target = letters[Math.floor(Math.random() * letters.length)];
-      targetEl.textContent = target;
-      messageEl.textContent = "hit " + target;
-      document.querySelector(`[data-key="${target}"]`).classList.add("target-key");
+    function clearKeys() {
+      document.querySelectorAll(".target-key, .danger-key").forEach(k => {
+        k.classList.remove("target-key", "danger-key");
+      });
+    }
+
+    function setMode(newMode) {
+      mode = newMode;
+      combo = 0;
+      comboEl.textContent = combo;
+      newRound();
+    }
+
+    function newRound() {
+      clearKeys();
+
+      if (mode === "combo") {
+        target = letters[Math.floor(Math.random() * letters.length)];
+        targetEl.textContent = target;
+        messageEl.textContent = "hit " + target;
+        document.querySelector(`[data-key="${target}"]`).classList.add("target-key");
+      }
+
+      if (mode === "words") {
+        wordTarget = words[Math.floor(Math.random() * words.length)];
+        wordProgress = "";
+        target = wordTarget[0];
+        targetEl.textContent = wordTarget;
+        messageEl.textContent = "type: " + wordTarget;
+        document.querySelector(`[data-key="${target}"]`).classList.add("target-key");
+      }
+
+      if (mode === "dont") {
+        target = letters[Math.floor(Math.random() * letters.length)];
+        targetEl.textContent = "NOT " + target;
+        messageEl.textContent = "press any key except " + target;
+        document.querySelector(`[data-key="${target}"]`).classList.add("danger-key");
+      }
+    }
+
+    function correct(points = 10) {
+      combo++;
+      score += points + combo;
+      scoreEl.textContent = score;
+      comboEl.textContent = combo;
+      messageEl.textContent = "sticky combo +" + combo;
+    }
+
+    function wrong() {
+      combo = 0;
+      comboEl.textContent = combo;
+      messageEl.textContent = "miss!";
     }
 
     function triggerKey(keyName) {
       playSound();
       pressVisual(keyName);
 
-      if (keyName === target) {
-        combo++;
-        score += 10 + combo;
-        messageEl.textContent = "sticky combo +" + combo;
-      } else {
-        combo = 0;
-        messageEl.textContent = "miss!";
+      if (mode === "combo") {
+        if (keyName === target) correct();
+        else wrong();
+        newRound();
       }
 
-      scoreEl.textContent = score;
-      comboEl.textContent = combo;
-      newTarget();
+      else if (mode === "words") {
+        if (keyName === target) {
+          wordProgress += keyName;
+          correct(12);
+
+          if (wordProgress === wordTarget) {
+            messageEl.textContent = "word cleared!";
+            score += 40;
+            scoreEl.textContent = score;
+            newRound();
+          } else {
+            clearKeys();
+            target = wordTarget[wordProgress.length];
+            document.querySelector(`[data-key="${target}"]`).classList.add("target-key");
+            messageEl.textContent = wordProgress + " / " + wordTarget;
+          }
+        } else {
+          wrong();
+          newRound();
+        }
+      }
+
+      else if (mode === "dont") {
+        if (keyName === target) wrong();
+        else correct(6);
+        newRound();
+      }
     }
 
     keys.forEach(key => {
@@ -257,7 +420,15 @@
       if (/^[A-Z]$/.test(key)) triggerKey(key);
     });
 
-    newTarget();
+    function openShop() {
+      document.getElementById("shop").style.display = "flex";
+    }
+
+    function closeShop() {
+      document.getElementById("shop").style.display = "none";
+    }
+
+    newRound();
   </script>
 </body>
 </html>
