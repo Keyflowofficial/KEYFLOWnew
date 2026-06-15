@@ -1,34 +1,228 @@
-<video id="bgVideo" autoplay muted loop playsinline>
-  <source src="https://limewire.com/d/mBGwm#sv5ZHGEyT2" type="video/mp4">
-</video>
-<div class="app">
-  <h1>Keyflow</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Keyflow</title>
+  <style>
+    * { box-sizing: border-box; }
 
-  <div class="hud">
-    <div>Score: <span id="score">0</span></div>
-    <div>Combo: <span id="combo">0</span>x</div>
-    <div>Target: <span id="target">?</span></div>
-  </div>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #342000, #070400 65%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
 
-  <div class="timer">
-    <div id="timerBar"></div>
-  </div>
+    .app {
+      width: 94vw;
+      max-width: 760px;
+      text-align: center;
+    }
 
-  <div class="screen">
-    <div id="message">press the target key</div>
-  </div>
+    h1 { margin-bottom: 12px; }
 
-  <div id="keyboard">
-    <div class="key-row">
-      <button class="key" data-key="Q">Q</button><button class="key" data-key="W">W</button><button class="key" data-key="E">E</button><button class="key" data-key="R">R</button><button class="key" data-key="T">T</button><button class="key" data-key="Y">Y</button><button class="key" data-key="U">U</button><button class="key" data-key="I">I</button><button class="key" data-key="O">O</button><button class="key" data-key="P">P</button>
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .hud div {
+      flex: 1;
+      background: rgba(255, 210, 90, 0.14);
+      padding: 10px;
+      border-radius: 16px;
+    }
+
+    .screen {
+      height: 80px;
+      border-radius: 24px;
+      margin-bottom: 18px;
+      background: rgba(255, 210, 90, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    #keyboard {
+      padding: 22px 18px 26px;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at 25% 10%, rgba(255,255,255,0.32), transparent 22%),
+        linear-gradient(145deg, rgba(255,205,70,0.92), rgba(150,70,0,0.95));
+      box-shadow:
+        inset 0 12px 22px rgba(255,255,255,0.22),
+        inset 0 -22px 35px rgba(70,25,0,0.5),
+        0 35px 80px rgba(0,0,0,0.65);
+    }
+
+    .key-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .middle-row { padding-left: 22px; padding-right: 22px; }
+    .bottom-letters { padding-left: 52px; padding-right: 52px; }
+
+    .key {
+      width: 56px;
+      height: 58px;
+      border: none;
+      border-radius: 18px;
+      font-weight: 900;
+      color: rgba(48, 24, 0, 0.82);
+      cursor: pointer;
+      background:
+        radial-gradient(circle at 35% 20%, rgba(255,255,255,0.55), transparent 28%),
+        linear-gradient(145deg, rgba(255,230,120,0.96), rgba(210,100,0,0.9));
+      box-shadow:
+        inset 0 9px 12px rgba(255,255,255,0.35),
+        inset 0 -10px 14px rgba(75,25,0,0.42),
+        0 9px 0 rgba(105,45,0,0.85),
+        0 14px 18px rgba(60,20,0,0.42);
+      transition: 0.08s ease;
+    }
+
+    .key.pressed {
+      transform: translateY(8px) scale(0.96, 0.88);
+      box-shadow:
+        inset 0 14px 20px rgba(60,20,0,0.62),
+        inset 0 -5px 10px rgba(255,235,150,0.28),
+        0 2px 0 rgba(95,35,0,0.9),
+        0 5px 10px rgba(50,15,0,0.45);
+    }
+
+    .key.target-key {
+      animation: pulse 0.7s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { box-shadow: 0 0 12px #fff1a8, 0 9px 0 rgba(105,45,0,0.85); }
+      to { box-shadow: 0 0 35px #ffea70, 0 9px 0 rgba(105,45,0,0.85); }
+    }
+
+    @media (max-width: 600px) {
+      .key {
+        width: 32px;
+        height: 44px;
+        border-radius: 13px;
+        font-size: 11px;
+      }
+
+      .middle-row { padding-left: 13px; padding-right: 13px; }
+      .bottom-letters { padding-left: 30px; padding-right: 30px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <h1>Keyflow</h1>
+
+    <div class="hud">
+      <div>Score: <span id="score">0</span></div>
+      <div>Combo: <span id="combo">0</span>x</div>
+      <div>Target: <span id="target">?</span></div>
     </div>
 
-    <div class="key-row middle-row">
-      <button class="key" data-key="A">A</button><button class="key" data-key="S">S</button><button class="key" data-key="D">D</button><button class="key" data-key="F">F</button><button class="key" data-key="G">G</button><button class="key" data-key="H">H</button><button class="key" data-key="J">J</button><button class="key" data-key="K">K</button><button class="key" data-key="L">L</button>
+    <div class="screen">
+      <div id="message">press the target key</div>
     </div>
 
-    <div class="key-row bottom-letters">
-      <button class="key" data-key="Z">Z</button><button class="key" data-key="X">X</button><button class="key" data-key="C">C</button><button class="key" data-key="V">V</button><button class="key" data-key="B">B</button><button class="key" data-key="N">N</button><button class="key" data-key="M">M</button>
+    <div id="keyboard">
+      <div class="key-row">
+        <button class="key" data-key="Q">Q</button><button class="key" data-key="W">W</button><button class="key" data-key="E">E</button><button class="key" data-key="R">R</button><button class="key" data-key="T">T</button><button class="key" data-key="Y">Y</button><button class="key" data-key="U">U</button><button class="key" data-key="I">I</button><button class="key" data-key="O">O</button><button class="key" data-key="P">P</button>
+      </div>
+
+      <div class="key-row middle-row">
+        <button class="key" data-key="A">A</button><button class="key" data-key="S">S</button><button class="key" data-key="D">D</button><button class="key" data-key="F">F</button><button class="key" data-key="G">G</button><button class="key" data-key="H">H</button><button class="key" data-key="J">J</button><button class="key" data-key="K">K</button><button class="key" data-key="L">L</button>
+      </div>
+
+      <div class="key-row bottom-letters">
+        <button class="key" data-key="Z">Z</button><button class="key" data-key="X">X</button><button class="key" data-key="C">C</button><button class="key" data-key="V">V</button><button class="key" data-key="B">B</button><button class="key" data-key="N">N</button><button class="key" data-key="M">M</button>
+      </div>
     </div>
   </div>
-</div>
+
+  <script>
+    const SOUND_URL = "https://tmpfiles.org/dl/wwwgU01Ubd7l/universfield-slime-impact-3524731-audiotrimmer.com2.mp3";
+    const letters = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
+
+    const scoreEl = document.getElementById("score");
+    const comboEl = document.getElementById("combo");
+    const targetEl = document.getElementById("target");
+    const messageEl = document.getElementById("message");
+    const keys = document.querySelectorAll(".key");
+
+    let score = 0;
+    let combo = 0;
+    let target = "";
+
+    function playSound() {
+      const sound = new Audio(SOUND_URL);
+      sound.volume = 0.85;
+      sound.play();
+    }
+
+    function pressVisual(keyName) {
+      const key = document.querySelector(`[data-key="${keyName}"]`);
+      if (!key) return;
+
+      key.classList.add("pressed");
+      setTimeout(() => key.classList.remove("pressed"), 110);
+    }
+
+    function clearGlow() {
+      document.querySelectorAll(".target-key").forEach(k => k.classList.remove("target-key"));
+    }
+
+    function newTarget() {
+      clearGlow();
+      target = letters[Math.floor(Math.random() * letters.length)];
+      targetEl.textContent = target;
+      messageEl.textContent = "hit " + target;
+
+      const key = document.querySelector(`[data-key="${target}"]`);
+      if (key) key.classList.add("target-key");
+    }
+
+    function triggerKey(keyName) {
+      playSound();
+      pressVisual(keyName);
+
+      if (keyName === target) {
+        combo++;
+        score += 10 + combo;
+        messageEl.textContent = "sticky combo +" + combo;
+      } else {
+        combo = 0;
+        messageEl.textContent = "miss!";
+      }
+
+      scoreEl.textContent = score;
+      comboEl.textContent = combo;
+      newTarget();
+    }
+
+    keys.forEach(key => {
+      key.addEventListener("click", () => triggerKey(key.dataset.key));
+    });
+
+    document.addEventListener("keydown", event => {
+      const key = event.key.toUpperCase();
+      if (/^[A-Z]$/.test(key)) triggerKey(key);
+    });
+
+    newTarget();
+  </script>
+</body>
+</html>
