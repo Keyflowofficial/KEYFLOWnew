@@ -214,7 +214,9 @@
 
     .modal-box {
       width: 90%;
-      max-width: 620px;
+      max-width: 680px;
+      max-height: 88vh;
+      overflow: auto;
       padding: 26px;
       border-radius: 32px;
       background: linear-gradient(145deg, var(--key1), var(--key2));
@@ -231,6 +233,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
     }
 
     .buy, .close {
@@ -241,6 +244,7 @@
       cursor: pointer;
       background: #241000;
       color: var(--accent);
+      white-space: nowrap;
     }
 
     .ad-screen {
@@ -276,11 +280,6 @@
       font-weight: 1000;
       color: #fff;
       margin: 18px 0;
-    }
-
-    #adNote {
-      color: rgba(255,255,255,.7);
-      font-weight: 700;
     }
 
     footer {
@@ -361,12 +360,24 @@
   <div class="modal" id="shop">
     <div class="modal-box">
       <h2>🛒 Keyflow Shop</h2>
+
       <div class="shop-item"><span>🍯 Honey Classic</span><button class="buy" onclick="buyTheme('honey',0)">Free</button></div>
       <div class="shop-item"><span>⚡ Neon Cyber</span><button class="buy" onclick="buyTheme('neon',120)">120 Gems</button></div>
       <div class="shop-item"><span>💎 Glass Ice</span><button class="buy" onclick="buyTheme('glass',140)">140 Gems</button></div>
       <div class="shop-item"><span>🌌 Galaxy Flow</span><button class="buy" onclick="buyTheme('galaxy',180)">180 Gems</button></div>
       <div class="shop-item"><span>🍓 Strawberry Goo</span><button class="buy" onclick="buyTheme('strawberry',160)">160 Gems</button></div>
       <div class="shop-item"><span>🖤 Void Honey</span><button class="buy" onclick="buyTheme('void',220)">220 Gems</button></div>
+      <div class="shop-item"><span>☣️ Toxic Slime</span><button class="buy" onclick="buyTheme('toxic',180)">180 Gems</button></div>
+      <div class="shop-item"><span>🌋 Lava Keys</span><button class="buy" onclick="buyTheme('lava',200)">200 Gems</button></div>
+      <div class="shop-item"><span>🌊 Ocean Glow</span><button class="buy" onclick="buyTheme('ocean',170)">170 Gems</button></div>
+      <div class="shop-item"><span>🍬 Candy Pop</span><button class="buy" onclick="buyTheme('candy',190)">190 Gems</button></div>
+      <div class="shop-item"><span>👑 Royal Keys</span><button class="buy" onclick="buyTheme('royal',230)">230 Gems</button></div>
+      <div class="shop-item"><span>💻 Cyber Blue</span><button class="buy" onclick="buyTheme('cyber',220)">220 Gems</button></div>
+      <div class="shop-item"><span>🌿 Mint Frost</span><button class="buy" onclick="buyTheme('mint',160)">160 Gems</button></div>
+      <div class="shop-item"><span>🔥 Inferno</span><button class="buy" onclick="buyTheme('inferno',240)">240 Gems</button></div>
+      <div class="shop-item"><span>🧊 Arctic Pulse</span><button class="buy" onclick="buyTheme('arctic',210)">210 Gems</button></div>
+      <div class="shop-item"><span>🟣 Purple Haze</span><button class="buy" onclick="buyTheme('purple',170)">170 Gems</button></div>
+
       <p style="font-weight:900;">Gems are earned by playing or watching ads. Shop is mock/demo for now.</p>
       <button class="close" onclick="closeShop()">Close</button>
     </div>
@@ -375,7 +386,7 @@
   <div class="ad-screen" id="adScreen">
     <div class="ad-box">
       <h2>No ad available at the moment</h2>
-      <p id="adNote">Simulated rewarded ad for testing.</p>
+      <p>Simulated rewarded ad for testing.</p>
       <div id="adCountdown">10</div>
       <p>Reward unlocks when the timer finishes.</p>
     </div>
@@ -393,15 +404,19 @@
       honey:{bg1:"#120800",bg2:"#000",panel:"rgba(255,210,90,.14)",accent:"#ffe38a",key1:"#ffeb87",key2:"#cd5f00",text:"#281400",glow:"#ffcc45",sound:"honey"},
       neon:{bg1:"#001216",bg2:"#020003",panel:"rgba(0,240,255,.12)",accent:"#75f7ff",key1:"#85f7ff",key2:"#005d75",text:"#00151a",glow:"#00f0ff",sound:"neon"},
       glass:{bg1:"#071018",bg2:"#000",panel:"rgba(210,245,255,.13)",accent:"#dff9ff",key1:"#e8fbff",key2:"#74a6c9",text:"#06131a",glow:"#b7f3ff",sound:"glass"},
-      galaxy:{bg1:"#16002a",bg2:"#000",panel:"rgba(190,120,255,.14)",accent:"#f0c7ff",key1:"#f1b8ff",key2:"#5c1dba",text:"#160026",glow:"#b056ff",sound:"neon"},
-      strawberry:{bg1:"#2a0010",bg2:"#050000",panel:"rgba(255,120,160,.15)",accent:"#ffd0df",key1:"#ffd1df",key2:"#d82364",text:"#2b0010",glow:"#ff4f91",sound:"honey"},
-      void:{bg1:"#050505",bg2:"#000",panel:"rgba(255,255,255,.08)",accent:"#f5d37a",key1:"#333",key2:"#050505",text:"#f5d37a",glow:"#f5d37a",sound:"neon"}
-    };
-
-    const sounds = {
-      honey:"https://tmpfiles.org/dl/wwwgU01Ubd7l/universfield-slime-impact-3524731-audiotrimmer.com2.mp3",
-      glass:"https://tmpfiles.org/dl/wTwCUPuEchSd/freesound_community-ding-101377-audiotrimmer.com.mp3",
-      neon:"https://tmpfiles.org/dl/wQwiUVuOLHPD/ahmed_abdulaal-laser-312360.mp3"
+      galaxy:{bg1:"#16002a",bg2:"#000",panel:"rgba(190,120,255,.14)",accent:"#f0c7ff",key1:"#f1b8ff",key2:"#5c1dba",text:"#160026",glow:"#b056ff",sound:"galaxy"},
+      strawberry:{bg1:"#2a0010",bg2:"#050000",panel:"rgba(255,120,160,.15)",accent:"#ffd0df",key1:"#ffd1df",key2:"#d82364",text:"#2b0010",glow:"#ff4f91",sound:"pop"},
+      void:{bg1:"#050505",bg2:"#000",panel:"rgba(255,255,255,.08)",accent:"#f5d37a",key1:"#333",key2:"#050505",text:"#f5d37a",glow:"#f5d37a",sound:"void"},
+      toxic:{bg1:"#001400",bg2:"#000",panel:"rgba(80,255,80,.12)",accent:"#b6ff7a",key1:"#c8ff76",key2:"#178a00",text:"#071500",glow:"#7cff2e",sound:"toxic"},
+      lava:{bg1:"#260500",bg2:"#000",panel:"rgba(255,80,20,.15)",accent:"#ffd08a",key1:"#ffb347",key2:"#b31300",text:"#260500",glow:"#ff3c00",sound:"lava"},
+      ocean:{bg1:"#001b2e",bg2:"#000",panel:"rgba(0,180,255,.13)",accent:"#a7ecff",key1:"#b8f3ff",key2:"#006c9c",text:"#00151f",glow:"#34cfff",sound:"ocean"},
+      candy:{bg1:"#21001d",bg2:"#050005",panel:"rgba(255,170,240,.15)",accent:"#ffd6fb",key1:"#ffd1f7",key2:"#e856c7",text:"#270020",glow:"#ff6ee7",sound:"candy"},
+      royal:{bg1:"#160014",bg2:"#030003",panel:"rgba(255,210,90,.12)",accent:"#ffe9a8",key1:"#ffe28a",key2:"#6d34c7",text:"#1c0020",glow:"#d8a8ff",sound:"royal"},
+      cyber:{bg1:"#020014",bg2:"#000",panel:"rgba(90,120,255,.13)",accent:"#b9c7ff",key1:"#adbaff",key2:"#2438c9",text:"#04091f",glow:"#6d7cff",sound:"cyber"},
+      mint:{bg1:"#001b12",bg2:"#000",panel:"rgba(120,255,200,.13)",accent:"#caffee",key1:"#c9ffe9",key2:"#00a878",text:"#002015",glow:"#55ffbf",sound:"mint"},
+      inferno:{bg1:"#2b0000",bg2:"#050000",panel:"rgba(255,90,30,.14)",accent:"#ffd1a1",key1:"#ffd27a",key2:"#d92300",text:"#2c0500",glow:"#ff6400",sound:"inferno"},
+      arctic:{bg1:"#001622",bg2:"#000",panel:"rgba(180,235,255,.14)",accent:"#e3fbff",key1:"#e9fdff",key2:"#4aa8d8",text:"#00141c",glow:"#9eeaff",sound:"arctic"},
+      purple:{bg1:"#140021",bg2:"#000",panel:"rgba(190,110,255,.14)",accent:"#e8c6ff",key1:"#e9c4ff",key2:"#8b2eff",text:"#1a0025",glow:"#b85cff",sound:"purple"}
     };
 
     const scoreEl = document.getElementById("score");
@@ -448,10 +463,45 @@
     }
 
     function playSound() {
-      const t = themes[currentTheme];
-      const sound = new Audio(sounds[t.sound]);
-      sound.volume = 0.85;
-      sound.play();
+      const audio = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audio.createOscillator();
+      const gain = audio.createGain();
+
+      const sound = themes[currentTheme].sound;
+
+      const settings = {
+        honey:{type:"sine",start:180,end:90,time:.12},
+        neon:{type:"square",start:620,end:240,time:.08},
+        glass:{type:"triangle",start:900,end:650,time:.10},
+        galaxy:{type:"sine",start:520,end:820,time:.14},
+        pop:{type:"triangle",start:320,end:170,time:.09},
+        void:{type:"sawtooth",start:120,end:60,time:.16},
+        toxic:{type:"square",start:260,end:430,time:.10},
+        lava:{type:"sawtooth",start:140,end:80,time:.18},
+        ocean:{type:"sine",start:240,end:160,time:.15},
+        candy:{type:"triangle",start:700,end:980,time:.08},
+        royal:{type:"sine",start:440,end:330,time:.13},
+        cyber:{type:"square",start:1000,end:520,time:.07},
+        mint:{type:"sine",start:660,end:420,time:.09},
+        inferno:{type:"sawtooth",start:210,end:95,time:.16},
+        arctic:{type:"triangle",start:980,end:720,time:.11},
+        purple:{type:"sine",start:360,end:540,time:.12}
+      };
+
+      const s = settings[sound];
+
+      osc.type = s.type;
+      osc.frequency.setValueAtTime(s.start, audio.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(s.end, audio.currentTime + s.time);
+
+      gain.gain.setValueAtTime(0.18, audio.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + s.time);
+
+      osc.connect(gain);
+      gain.connect(audio.destination);
+
+      osc.start();
+      osc.stop(audio.currentTime + s.time);
     }
 
     function particles() {
@@ -633,18 +683,12 @@
 
         if (seconds <= 0) {
           clearInterval(timer);
-
           gems += 25;
           gemsEl.textContent = gems;
           save();
-
           adScreen.style.display = "none";
           messageEl.textContent = "Ad reward complete! +25 gems";
           adRunning = false;
-
-          // FUTURE REAL AD SETUP:
-          // Replace this simulated black ad screen with a real rewarded ad provider later.
-          // Only give gems after the real ad successfully finishes.
         }
       }, 1000);
     }
